@@ -22,7 +22,22 @@ let vm = new Vue(
         },
 
         methods: {
+            // sortuje inplace
+            sortujPoCenieMal() {
+                this.produkty.sort((a, b) => a.price < b.price);
+                // jesli jest wybrany filtr na przeciwnym sortowaniu to go usuwamy
+                document.getElementById("cenaSortRos").classList.remove("akt_filtr_cen");
+                // i dodajemy klase na te sortowanie
+                document.getElementById("cenaSortMal").classList.add("akt_filtr_cen");
+            },
 
+            sortujPoCenieRos() {
+                this.produkty.sort((a, b) => a.price > b.price);
+                // jesli jest wybrany filtr na przeciwnym sortowaniu to go usuwamy
+                document.getElementById("cenaSortMal").classList.remove("akt_filtr_cen");
+                // i dodajemy klase na te sortowanie
+                document.getElementById("cenaSortRos").classList.add("akt_filtr_cen");
+            },
         },
         
         filters: {
@@ -53,8 +68,6 @@ let vm = new Vue(
                     console.log("axios => byc moze nie uruchomiles serwera komenda");
                     console.log("json-server --watch db.json");
                 });
-            console.log(this.produkty);
-
         },
         
         created: function() {
@@ -72,13 +85,11 @@ let vm = new Vue(
                 // i teraz strony
                 this.strony = Math.ceil(this.produkty.length / 4);
                 const query = new URLSearchParams(location.search);
-                console.log(query.get("strona"));
                 // +query.get("strona") zamienia "1" (String) na 1 (Int)
                 this.strona = +query.get("strona");  
 
                 let ind_start = (this.strona - 1) * 4;
                 let ind_end = ind_start + 4;
-                console.log(ind_start, ind_end);
                 // array.slice(start_inclusive, end_exclusive)
                 this.filteredList = this.produkty.slice(ind_start, ind_end);
                 // 4 bo po produkty na strone

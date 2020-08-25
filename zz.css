@@ -54,15 +54,19 @@ select {
 .srt_malej {
     border: 1px black solid;
     padding: 0.3em;
-    margin-right: -3px;
     border-radius: 25px 0px 0px 25px;
+    text-align: justify;
 }
 
 .srt_rosn {
     border: 1px black solid;
     padding: 0.3em;
-    margin-left: -3px;
     border-radius: 0px 25px 25px 0px;
+    text-align: justify;
+}
+
+.akt_filtr_cen {
+    background: lightgray;
 }
 
 .wyb_kolor:hover {
@@ -122,4 +126,12 @@ nav a {
 /* style dla kotwicy bez href */
 nav a:not([href]) {
     color: lightgray;
+}
+
+.prod_specjalny {
+    background: #fffbe5;
+}
+
+.prod_specjalny button {
+    background: #e5c100;
 }

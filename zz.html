@@ -43,11 +43,17 @@
             <br/>
             <h1 class="nagl_l_prod">Lista produktow</h1>
             <p class="par_l_prod">Sortowanie wg. ceny </p>
-            <div class="sort_btn srt_malej">malejaco</div>
-            <div class="sort_btn srt_rosn">rosnaco</div>
+            <div id="cenaSortMal" class="sort_btn srt_malej"
+                 @click="sortujPoCenieMal">
+                malejaco
+            </div>
+            <div id="cenaSortRos" class="sort_btn srt_rosn"
+                 @click="sortujPoCenieRos">
+                rosnaco
+            </div>
             <ul>
                 <li v-for="produkt of filteredList">
-                    <div class="wiersz">
+                    <div class="wiersz" :class="produkt.special ? 'prod_specjalny' : null">
                         <div class="kolumna lewa">
                             <div class="zdjecie_produktu">
                                 <img src="./latawiec.svg" alt="zdj_prod" />
