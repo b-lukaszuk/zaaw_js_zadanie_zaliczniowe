@@ -64,19 +64,24 @@ let vm = new Vue(
         
         // za: https://vuejs.org/v2/guide/computed.html#Watchers
         // oraz sugestia ze stack overflow
-        // nie dajemy filteredList w computed, bo musi to pojsc po axiosie
+        // nie dajemy filteredList w computed (jak na wykladzie), bo musi to pojsc po axiosie
         watch: {
             // whenever produkty changes this function will run
             produkty: function() {
-                // console.log("zmiana w this.produkty");
-                this.filteredList = this.produkty.slice(this.strona * 4, this.strona * 4 + 4);
-                // 4 bo po produkty na strone
                 
                 // i teraz strony
-                self.strony = Math.ceil(self.produkty.length / 4);
+                this.strony = Math.ceil(this.produkty.length / 4);
                 const query = new URLSearchParams(location.search);
                 console.log(query.get("strona"));
-                self.strona = +query.get("strona");  
+                // +query.get("strona") zamienia "1" (String) na 1 (Int)
+                this.strona = +query.get("strona");  
+
+                let ind_start = (this.strona - 1) * 4;
+                let ind_end = ind_start + 4;
+                console.log(ind_start, ind_end);
+                // array.slice(start_inclusive, end_exclusive)
+                this.filteredList = this.produkty.slice(ind_start, ind_end);
+                // 4 bo po produkty na strone
             }
         },
 
