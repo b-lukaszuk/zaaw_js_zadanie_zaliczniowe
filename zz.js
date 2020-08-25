@@ -9,7 +9,7 @@ let vm = new Vue(
             
             produkty: null,
             // produkty - wczytane w axiosie (dol skryptu)
-            // pola: name (String), model (String), price (Float), 
+            // pola: name (String), model (String), brand (String), price (Float), 
             // description (String), color (String), id (Int), special (Bool)
         },
 
@@ -17,6 +17,16 @@ let vm = new Vue(
 
         },
         
+        filters: {
+           cenaDoNetto: function(cena) {
+               // cena w bazie danych jest w odp formacie
+               // nie dajemy wiec Number.toFixed()
+               return cena + " zl netto";
+           },
+           cenaDoBrutto: function(cena) {
+               return (cena * 1.23).toFixed(2) + "zl brutto";
+           }
+        },
         // w dokumnetacji vue.js podaja aby tu dac axios-a
         mounted: function () {
             // aby w axiosie przypisac produkty:

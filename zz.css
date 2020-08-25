@@ -9,6 +9,7 @@ select:hover {
 .lupka {
     width: 0.7em;
     height: 0.9em;
+    margin-left: 0.2em;
 }
 
 .wysz_marka_model {
@@ -40,6 +41,7 @@ select {
 .par_l_prod {
     display: inline;
     text-align: right;
+    margin-left: 20em;
 }
 
 .sort_btn {
@@ -65,4 +67,36 @@ select {
 
 .wyb_kolor:hover {
     cursor: pointer;
+}
+
+ul {
+    list-style-type: none;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.kolumna {
+    float: left;
+    height: 170px;
+}
+
+.lewa, .prawa {
+    width: 25%;
+}
+
+.srodek {
+    width: 50%;
+}
+
+.wiersz:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.zdjecie_produktu img {
+    width: 150px;
+    height: 150px;
+    border: 1px solid black;
+    margin: 10px;
 }

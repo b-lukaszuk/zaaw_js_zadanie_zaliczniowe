@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8"/>
         <title>Document</title>
-       <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <link rel="stylesheet" href="./zz.css">
     </head>
     <body>
@@ -42,13 +42,34 @@
             </form>
             <br/>
             <h1 class="nagl_l_prod">Lista produktow</h1>
-            <p class="par_l_prod">&nbsp;&nbsp;&nbsp;&nbsp;Sortowanie wg. ceny </p>
+            <p class="par_l_prod">Sortowanie wg. ceny </p>
             <div class="sort_btn srt_malej">malejaco</div>
             <div class="sort_btn srt_rosn">rosnaco</div>
             <hr/>
             <ul>
                 <li v-for="produkt of produkty">
-                    {{produkt.name}}
+                    <div class="wiersz">
+                        <div class="kolumna lewa">
+                            <div class="zdjecie_produktu">
+                                <img src="./latawiec.svg" alt="zdj_prod" />
+                            </div>
+                        </div>
+                        <div class="kolumna srodek">
+                            {{produkt.name}}
+                            <br/>
+                            Model produktu: {{produkt.model}}
+                            <br/>
+                            Marka: {{produkt.brand}}
+                        </div>
+                        <div class="kolumna prawa">
+                            <button type="button">Dodaj do porownania</button>
+                            <br/><br/>
+                            {{produkt.price | cenaDoNetto}}
+                            <br/>
+                            {{produkt.price | cenaDoBrutto}}
+                        </div>
+                    </div>
+                    <hr/>
                 </li>
             </ul>
         </div>
