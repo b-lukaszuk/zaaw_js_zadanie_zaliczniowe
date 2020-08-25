@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Document</title>
+       <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <link rel="stylesheet" href="./zz.css">
+    </head>
+    <body>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+        <div id="app">
+
+            <h1>Wyszukiwarka</h1>
+            <hr/>
+            <div class="wysz_marka_model">
+                <input name="" type="text"
+                       class="z_lupka"
+                       placeholder="Podaj nazwe produktu lub model"/>
+                <img src="./mag_glass.svg" alt="lupka" class="lupka"></img>
+            </div>
+            <button type="button">Szukaj</button>
+            <br/>
+            <select name="" id="">
+                <option value="marka_wybor">Wybierz marke produktu</option>
+            </select>
+            <label for="cena_od">Cena od</label>
+            <input type="" name="cena_od" value="" placeholder="cena" />
+            <label for="cena_do">Cena od</label>
+            <input type="" name="cena_do" value="" placeholder="cena" />
+            <form action="">
+                Wybierz kolor:
+                <label class="wyb_kolor">
+                    <input name="" type="checkbox" value=""/> Kolor1
+                </label>
+                <label class="wyb_kolor">
+                    <input name="" type="checkbox" value=""/> Kolor2
+                </label>
+                <label class="wyb_kolor">
+                    <input name="" type="checkbox" value=""/> Kolor3
+                </label>
+            </form>
+            <br/>
+            <h1 class="nagl_l_prod">Lista produktow</h1>
+            <p class="par_l_prod">&nbsp;&nbsp;&nbsp;&nbsp;Sortowanie wg. ceny </p>
+            <div class="sort_btn srt_malej">malejaco</div>
+            <div class="sort_btn srt_rosn">rosnaco</div>
+            <hr/>
+            <ul>
+                <li v-for="produkt of produkty">
+                    {{produkt.name}}
+                </li>
+            </ul>
+        </div>
+
+        <script src="./zz.js"></script>
+    </body>
+</html>
