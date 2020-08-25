@@ -45,9 +45,8 @@
             <p class="par_l_prod">Sortowanie wg. ceny </p>
             <div class="sort_btn srt_malej">malejaco</div>
             <div class="sort_btn srt_rosn">rosnaco</div>
-            <hr/>
             <ul>
-                <li v-for="produkt of produkty">
+                <li v-for="produkt of filteredList">
                     <div class="wiersz">
                         <div class="kolumna lewa">
                             <div class="zdjecie_produktu">
@@ -60,6 +59,8 @@
                             Model produktu: {{produkt.model}}
                             <br/>
                             Marka: {{produkt.brand}}
+                            <br/>
+                            ID: {{produkt.id}}
                         </div>
                         <div class="kolumna prawa">
                             <button type="button">Dodaj do porownania</button>
@@ -69,9 +70,15 @@
                             {{produkt.price | cenaDoBrutto}}
                         </div>
                     </div>
-                    <hr/>
                 </li>
             </ul>
+            <nav>
+		        <a :href="strona > 1 ? '?strona=1' : null">&lt;&lt;</a>
+                <!-- v-for moze wziac Int-a wtedy wykona akcje tyle razy -->
+                <!-- np. n in 3 to przyjmuje wartosci 1, 2, 3-->
+		        <a v-for="n in strony" :href="n !== strona ? '?strona=' + n : null">{{n}}</a>
+		        <a :href="strona < strony ? '?strona='+strony : null">&gt;&gt;</a>
+	        </nav>
         </div>
 
         <script src="./zz.js"></script>

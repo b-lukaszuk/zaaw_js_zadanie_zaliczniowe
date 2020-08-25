@@ -88,6 +88,12 @@ ul {
     width: 50%;
 }
 
+.wiersz {
+    border-top: 2px solid black;
+    padding: 10px;
+    width: 50em;
+}
+
 .wiersz:after {
     content: "";
     display: table;
@@ -99,4 +105,21 @@ ul {
     height: 150px;
     border: 1px solid black;
     margin: 10px;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+}
+
+nav a {
+    border: 1px solid black;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+}
+
+/* style dla kotwicy bez href */
+nav a:not([href]) {
+    color: lightgray;
 }
