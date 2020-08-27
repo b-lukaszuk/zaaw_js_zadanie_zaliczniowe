@@ -30,7 +30,7 @@ let vm = new Vue(
             nazwa_lub_model_prod: "",
             
             // aktywny filtr cenowy
-            // 3 stany {null|rosnaco|malejaco}
+            // 3 stany {null | malejaco -> m | rosnaco -> r}
             // potrzebny do utrzymania posortowania cenowego po kliknieciu
             // <a href=?strona=2> 
             // (alternatywa vue router, ale wtedy sporo przerabiania aplikacji,
@@ -47,7 +47,7 @@ let vm = new Vue(
                 document.getElementById("cenaSortRos").classList.remove("akt_filtr_cen");
                 // i dodajemy klase na te sortowanie
                 document.getElementById("cenaSortMal").classList.add("akt_filtr_cen");
-                this.filtrCenowy = "malejaco";
+                this.filtrCenowy = "m";
                 // zapamietanie filtra
                 window.sessionStorage.setItem("filtrCenowy", this.filtrCenowy);
             },
@@ -58,7 +58,7 @@ let vm = new Vue(
                 document.getElementById("cenaSortMal").classList.remove("akt_filtr_cen");
                 // i dodajemy klase na te sortowanie
                 document.getElementById("cenaSortRos").classList.add("akt_filtr_cen");
-                this.filtrCenowy = "rosnaco";
+                this.filtrCenowy = "r";
                 window.sessionStorage.setItem("filtrCenowy", this.filtrCenowy);
             },
             
@@ -154,9 +154,9 @@ window.onload = () => {
         // sprawdzamy czy ostatnio byl filtr cenowy jesli tak to go przywracamy
         // potrzebne przy klikaniu <a href=?strona=2> przy stronicowaniu
         let ostFiltrCenowy = window.sessionStorage.getItem("filtrCenowy");
-        if(ostFiltrCenowy === "rosnaco") {
-            vm.sortujPoCenieRos();
-        } else if (ostFiltrCenowy === "malejaco") {
+        if(ostFiltrCenowy === "m") {
+            vm.sortujPoCenieMal();
+        } else if (ostFiltrCenowy === "r") {
             vm.sortujPoCenieRos();
         }
     }, 200);
