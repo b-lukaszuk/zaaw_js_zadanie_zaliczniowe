@@ -19,6 +19,7 @@ let vm = new Vue(
             
             strona: 0,
             strony: 0,
+            nazwa_lub_model_prod: "",
         },
 
         methods: {
@@ -38,6 +39,9 @@ let vm = new Vue(
                 // i dodajemy klase na te sortowanie
                 document.getElementById("cenaSortRos").classList.add("akt_filtr_cen");
             },
+            szukajPoKryteriach() {
+                console.log("szukam po kryteriach");
+            }
         },
         
         filters: {
@@ -65,14 +69,13 @@ let vm = new Vue(
                 })
                 .catch(function(error) {
                     console.log("axios => wystapil jakis blad");
-                    console.log("axios => byc moze nie uruchomiles serwera komenda");
+                    console.log("axios => byc moze nie uruchomiles serwera komenda:");
                     console.log("json-server --watch db.json");
                 });
         },
         
         created: function() {
             console.log("w created");
-
         },
         
         // za: https://vuejs.org/v2/guide/computed.html#Watchers
@@ -81,12 +84,15 @@ let vm = new Vue(
         watch: {
             // whenever produkty changes this function will run
             produkty: function() {
-                
+                console.log("w watch produkty");
                 // i teraz strony
                 this.strony = Math.ceil(this.produkty.length / 4);
                 const query = new URLSearchParams(location.search);
                 // +query.get("strona") zamienia "1" (String) na 1 (Int)
                 this.strona = +query.get("strona");  
+                // przy zaladowaniu storny startowej zz.html
+                // this.strona to null, musimy wiec to obsluzyc
+                this.strona = this.strona ? this.strona : 1;
 
                 let ind_start = (this.strona - 1) * 4;
                 let ind_end = ind_start + 4;
@@ -101,3 +107,4 @@ let vm = new Vue(
         },
     }
 );
+

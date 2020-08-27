@@ -15,14 +15,21 @@
             <hr/>
             <div class="wysz_marka_model">
                 <input name="" type="text"
+                       v-model="nazwa_lub_model_prod"
                        class="z_lupka"
+                       :class="nazwa_lub_model_prod.length < 3 ? 'red' : 'green'"
                        placeholder="Podaj nazwe produktu lub model"/>
                 <img src="./mag_glass.svg" alt="lupka" class="lupka"></img>
             </div>
-            <button type="button">Szukaj</button>
+            <button type="button"
+            @click="szukajPoKryteriach">
+                Szukaj
+            </button>
             <br/>
-            <select name="" id="">
+            <select name="" id="wyborMarki">
                 <option value="marka_wybor">Wybierz marke produktu</option>
+                <option v-for="produkt of filteredList"
+                        v-on:value="produkt.brand">{{produkt.brand}}</option>
             </select>
             <label for="cena_od">Cena od</label>
             <input type="" name="cena_od" value="" placeholder="cena" />
@@ -79,11 +86,17 @@
                 </li>
             </ul>
             <nav>
-		        <a :href="strona > 1 ? '?strona=1' : null">&lt;&lt;</a>
+		        <a :href="strona > 1 ? '?strona=1' : null"
+                   class="fst_page" title="first page">
+                    &lt;&lt;
+                </a>
                 <!-- v-for moze wziac Int-a wtedy wykona akcje tyle razy -->
                 <!-- np. n in 3 to przyjmuje wartosci 1, 2, 3-->
 		        <a v-for="n in strony" :href="n !== strona ? '?strona=' + n : null">{{n}}</a>
-		        <a :href="strona < strony ? '?strona='+strony : null">&gt;&gt;</a>
+		        <a :href="strona < strony ? '?strona='+strony : null"
+                   class="last_page" title="last page">
+                    &gt;&gt;
+                </a>
 	        </nav>
         </div>
 

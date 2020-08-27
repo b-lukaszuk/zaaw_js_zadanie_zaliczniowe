@@ -135,3 +135,19 @@ nav a:not([href]) {
 .prod_specjalny button {
     background: #e5c100;
 }
+
+.red {
+    border: 2px dashed red;
+}
+
+.green {
+    border: 2px solid green;
+}
+
+.fst_page {
+    border-radius: 10px 0px 0px 10px;
+}
+
+.last_page {
+    border-radius: 0px 10px 10px 0px;
+}
