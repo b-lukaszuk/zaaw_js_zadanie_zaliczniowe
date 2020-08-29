@@ -10,124 +10,179 @@
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <div id="app">
 
-            <h1>Wyszukiwarka</h1>
-            <hr/>
-            <div class="wysz_marka_model">
-                <input name="" type="text" maxlength="15"
-                       v-model="szukanaFraza"
-                       class="z_lupka"
-                       :class="szukanaFraza.length < 3 ? 'red' : 'green'"
-                       placeholder="Podaj nazwe produktu lub model"/>
-                <img src="./mag_glass.svg" alt="lupka" class="lupka"></img>
-            </div>
-            <button type="button"
-                    @click="updateFiltrWynikow"
-                    :disabled="szukanaFraza.length < 0">
-                Szukaj
-            </button>
-            <br/> <br/>
-            <select name="" v-if="filteredList" id="wyborMarki"
-                    v-model="wybranaMarka"
-                    @change="zmienWyborMarki(); updateFiltrWynikow()">
-                <option :id="marka" v-for="marka of zwrocUnikalneMarki()"
-                        v-on:value="marka" >
-                    {{marka}}</option>
-            </select>
-            <label for="cena_od">Cena od</label>
-            <input type="" name="cena_od" value="" placeholder="cena"
-                   v-model.number="cenaOd"
-                   :class="(czyFormatCeny(cenaOd) && czyMinLtMax())
-                         ? 'green' : 'red'"
-                   @keyup.enter="updateFiltrWynikow"/>
-            <label for="cena_do">Cena do</label>
-            <input type="" name="cena_do" value="" placeholder="cena"
-                   v-model.number="cenaDo"
-                   :class="(czyFormatCeny(cenaDo) && czyMinLtMax())
-                         ? 'green' : 'red'"
-                   @keyup.enter="updateFiltrWynikow"/>
-            <br/>
-            <!-- za: https://vuejs.org/v2/guide/forms.html#Checkbox -->
-            Wybierz kolor:
-            <label class="wyb_kolor" for="black">
-                <input id="black" name="black" type="checkbox"
-                       v-model="wybrKolory" @change="updateFiltrWynikow"
-                       value="black"/> Black &nbsp;&nbsp;&nbsp;&nbsp;
-            </label>
-            <label class="wyb_kolor" for="cyan">
-                <input id="cyan" name="" type="checkbox"
-                       v-model="wybrKolory" @change="updateFiltrWynikow"
-                       value="cyan"/> Cyan &nbsp;&nbsp;&nbsp;&nbsp;
-            </label>
-            <label class="wyb_kolor" for="red">
-                <input id="red" name="" type="checkbox"
-                       v-model="wybrKolory" @change="updateFiltrWynikow"
-                       value="red" /> Red &nbsp;&nbsp;&nbsp;&nbsp;
-            </label>
-            <br/><br/><br/>
-            <h1 class="nagl_l_prod">Lista produktow</h1>
-            <p class="par_l_prod">Sortowanie wg. ceny </p>
-            <div id="cenaSortMal" class="sort_btn srt_malej"
-                 @click="ustawSortPoCenie('m'); updateFiltrWynikow()">
-                malejaco
-            </div>
-            <div id="cenaSortRos" class="sort_btn srt_rosn"
-                 @click="ustawSortPoCenie('r'); updateFiltrWynikow()">
-                rosnaco
-            </div>
-            <ul>
-                <li v-for="produkt of filteredList">
-                    <div class="wiersz" :class="produkt.special ? 'prod_specjalny' : null">
-                        <div class="kolumna lewa">
-                            <div class="zdjecie_produktu">
-                                <img src="./latawiec.svg" alt="zdj_prod" />
+            <!-- tryb normalnego wywietlania produktow -->
+            <div v-if="!trybPorownywania">
+                <h1>Wyszukiwarka</h1>
+                <hr/>
+                <div class="wysz_marka_model">
+                    <input name="" type="text" maxlength="15"
+                           v-model="szukanaFraza"
+                           class="z_lupka"
+                           :class="szukanaFraza.length < 3 ? 'red' : 'green'"
+                           placeholder="Podaj nazwe produktu lub model"/>
+                    <img src="./mag_glass.svg" alt="lupka" class="lupka"></img>
+                </div>
+                <button type="button"
+                        @click="updateFiltrWynikow"
+                        :disabled="szukanaFraza.length < 0">
+                    Szukaj
+                </button>
+                <br/> <br/>
+                <select name="" v-if="filteredList" id="wyborMarki"
+                        v-model="wybranaMarka"
+                        @change="zmienWyborMarki(); updateFiltrWynikow()">
+                    <option :id="marka" v-for="marka of zwrocUnikalneMarki()"
+                            v-on:value="marka" >
+                        {{marka}}</option>
+                </select>
+                <label for="cena_od">Cena od</label>
+                <input type="" name="cena_od" value="" placeholder="cena"
+                       v-model.number="cenaOd"
+                       :class="(czyFormatCeny(cenaOd) && czyMinLtMax())
+                             ? 'green' : 'red'"
+                       @keyup.enter="updateFiltrWynikow"/>
+                <label for="cena_do">Cena do</label>
+                <input type="" name="cena_do" value="" placeholder="cena"
+                       v-model.number="cenaDo"
+                       :class="(czyFormatCeny(cenaDo) && czyMinLtMax())
+                             ? 'green' : 'red'"
+                       @keyup.enter="updateFiltrWynikow"/>
+                <br/>
+                <!-- za: https://vuejs.org/v2/guide/forms.html#Checkbox -->
+                Wybierz kolor:
+                <label class="wyb_kolor" for="black">
+                    <input id="black" name="black" type="checkbox"
+                           v-model="wybrKolory" @change="updateFiltrWynikow"
+                           value="black"/> Black &nbsp;&nbsp;&nbsp;&nbsp;
+                </label>
+                <label class="wyb_kolor" for="cyan">
+                    <input id="cyan" name="" type="checkbox"
+                           v-model="wybrKolory" @change="updateFiltrWynikow"
+                           value="cyan"/> Cyan &nbsp;&nbsp;&nbsp;&nbsp;
+                </label>
+                <label class="wyb_kolor" for="red">
+                    <input id="red" name="" type="checkbox"
+                           v-model="wybrKolory" @change="updateFiltrWynikow"
+                           value="red" /> Red &nbsp;&nbsp;&nbsp;&nbsp;
+                </label>
+                <br/><br/><br/>
+                <h1 class="nagl_l_prod">Lista produktow</h1>
+                <button type="button" class="wyswPorProdBtn"
+                        @click="wyswietlPorProd"
+                        :disabled="idsProdDoPor.length == 0">
+                    Porownaj wybr. produky
+                </button>
+                <p class="par_l_prod">Sortowanie wg. ceny </p>
+                <div id="cenaSortMal" class="sort_btn srt_malej"
+                     @click="ustawSortPoCenie('m'); updateFiltrWynikow()">
+                    malejaco
+                </div>
+                <div id="cenaSortRos" class="sort_btn srt_rosn"
+                     @click="ustawSortPoCenie('r'); updateFiltrWynikow()">
+                    rosnaco
+                </div>
+                <ul>
+                    <li v-for="produkt of filteredList">
+                        <div class="wiersz" :class="produkt.special ? 'prod_specjalny' : null">
+                            <div class="kolumna lewa">
+                                <div class="zdjecie_produktu">
+                                    <img src="./latawiec.svg" alt="zdj_prod" />
+                                </div>
+                            </div>
+                            <div class="kolumna srodek">
+                                <div class="nazwa_prod">
+                                    {{produkt.name}}
+                                </div>
+                                <br/>
+                                Model produktu: {{produkt.model}}
+                                <br/>
+                                <div class="marka_prod">
+                                    Marka: {{produkt.brand}}
+                                </div>
+                                <!-- <br/> -->
+                                <!-- ID: {{produkt.id}} -->
+                                <!-- <br/> -->
+                                <!-- kolor: {{produkt.color}} -->
+                            </div>
+                            <div class="kolumna prawa">
+                                <button type="button" @click="dodajProdDoPor(produkt)"
+                                        :disabled="idsProdDoPor.length === 3 ||
+                                              idsProdDoPor.includes(produkt.id)">
+                                    Dodaj do porownania
+                                </button>
+                                <br/><br/>
+                                <div class="cena_netto">
+                                    {{produkt.price | cenaDoNetto}}
+                                </div>
+                                <br/>
+                                <div class="cena_brutto">
+                                    {{produkt.price | cenaDoBrutto}}
+                                </div>
                             </div>
                         </div>
-                        <div class="kolumna srodek">
-                            <div class="nazwa_prod">
-                                {{produkt.name}}
-                            </div>
-                            <br/>
-                            Model produktu: {{produkt.model}}
-                            <br/>
-                            <div class="marka_prod">
-                                Marka: {{produkt.brand}}
-                            </div>
-                            <!-- <br/> -->
-                            <!-- ID: {{produkt.id}} -->
-                            <!-- <br/> -->
-                            <!-- kolor: {{produkt.color}} -->
-                        </div>
-                        <div class="kolumna prawa">
-                            <button type="button" @click="dodajProdDoPor(produkt)"
-                            :disabled="idProdDoPor.length === 3 ||
-                                          idProdDoPor.includes(produkt.id)">
-                                Dodaj do porownania
+                    </li>
+                </ul>
+                <nav>
+		            <a :href="strona > 1 ? '?strona=1' : null"
+                       class="fst_page" title="first page">
+                        &lt;&lt;
+                    </a>
+                    <!-- v-for moze wziac Int-a wtedy wykona akcje tyle razy -->
+                    <!-- np. n in 3 to przyjmuje wartosci 1, 2, 3-->
+		            <a v-for="n in strony" :href="n !== strona ? '?strona=' + n : null">{{n}}</a>
+		            <a :href="strona < strony ? '?strona='+strony : null"
+                       class="last_page" title="last page">
+                        &gt;&gt;
+                    </a>
+	            </nav>
+            </div>
+            <!-- tryb porownywania wlaczony -->
+            <div v-if="trybPorownywania" class="porownywarka">
+                <h1>Porownywarka produktow</h1>
+                <hr/> <br/> <br/>
+                <ul>
+                    <li v-for="produkt of zwrocProdPor()"
+                        :class="produkt.special ? 'prod_specjalny' : null">
+                        <div class="button">
+                            <button type="button">
+                                Usun z porownania
                             </button>
-                            <br/><br/>
+                        </div>
+                        <div class="zdjecie_produktu">
+                            <img src="./latawiec.svg" alt="zdj_prod" />
+                        </div>
+                        <div class="nazwa_prod">
+                            {{produkt.name}}
+                        </div>
+                        <div class="model_prod">
+                            Model produktu: {{produkt.model}}
+                        </div>
+                        <div class="marka_prod">
+                            Marka: {{produkt.brand}}
+                        </div>
+                        <br/>
+                        ID: {{produkt.id}}
+                        <br/>
+                        <div class="cena_prod">
                             <div class="cena_netto">
                                 {{produkt.price | cenaDoNetto}}
                             </div>
-                            <br/>
                             <div class="cena_brutto">
                                 {{produkt.price | cenaDoBrutto}}
                             </div>
                         </div>
-                    </div>
-                </li>
-            </ul>
-            <nav>
-		        <a :href="strona > 1 ? '?strona=1' : null"
-                   class="fst_page" title="first page">
-                    &lt;&lt;
-                </a>
-                <!-- v-for moze wziac Int-a wtedy wykona akcje tyle razy -->
-                <!-- np. n in 3 to przyjmuje wartosci 1, 2, 3-->
-		        <a v-for="n in strony" :href="n !== strona ? '?strona=' + n : null">{{n}}</a>
-		        <a :href="strona < strony ? '?strona='+strony : null"
-                   class="last_page" title="last page">
-                    &gt;&gt;
-                </a>
-	        </nav>
+                        <div class="opis_prod">
+                            <div class="opis_naglowek">
+                                Opis
+                            </div>
+                            {{produkt.description}}
+                        </div>
+                        <div class="kolor_prod">
+                            kolor: {{produkt.color}}
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
 
         <script src="./zz.js"></script>

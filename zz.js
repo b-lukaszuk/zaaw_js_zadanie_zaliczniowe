@@ -53,7 +53,9 @@ let vm = new Vue(
             wybranaMarka: "Wybierz marke produktu",
             
             // id, a nie same produkty, bo sessionStorage przechowuje tekst
-            idProdDoPor: [],
+            idsProdDoPor: [],
+            
+            trybPorownywania: false,
             
         },
 
@@ -206,10 +208,33 @@ let vm = new Vue(
             },
             
             dodajProdDoPor(produkt) {
-                this.idProdDoPor.push(produkt.id);
+                this.idsProdDoPor.push(produkt.id);
 
                 // zapamietujemy id dodanych produktow
-                window.sessionStorage.setItem("idProdDoPor", this.idProdDoPor);
+                window.sessionStorage.setItem("idsProdDoPor", this.idsProdDoPor);
+            },
+            
+            wyswietlPorProd() {
+                console.log("wyswietlam porownanie produktow"); 
+                this.trybPorownywania = true;
+            },
+            
+            // zwraca liste produktow porownywanych
+            zwrocProdPor() {
+                let tabProdPor = [];
+                for (let i = 0; i < this.idsProdDoPor.length; i++) {
+                    for (let j = 0; j < this.produktyOryg.length; j++) {
+                        if(this.produktyOryg[j].id === this.idsProdDoPor[i]) {
+                            tabProdPor.push(this.produktyOryg[j]);
+                            break;
+                        }
+                    }
+                }
+                return tabProdPor;
+            },
+            
+            usunPorProd() {
+                // tu skonczylem
             },
 
             updateFiltrWynikow() {
@@ -251,7 +276,7 @@ let vm = new Vue(
                 return cena + " zl netto";
             },
             cenaDoBrutto: function(cena) {
-                return (cena * 1.23).toFixed(2) + "zl brutto";
+                return (cena * 1.23).toFixed(2) + " zl brutto";
             }
         },
         // w dokumnetacji vue.js podaja aby tu dac axios-a
@@ -345,10 +370,10 @@ window.onload = () => {
         vm.wybranaMarka = ss.getItem("wybranaMarka") || "Wybierz marke produktu";
         
         // wczytywanie id wybranych produktow
-        if(ss.getItem("idProdDoPor")) { // bo null przy 1 odpaleniu strony
+        if(ss.getItem("idsProdDoPor")) { // bo null przy 1 odpaleniu strony
             // zwraca talice stringow, np. ["1", "2", "3"]
-            vm.idProdDoPor = zwrocTabliceZtekstu(ss.getItem("idProdDoPor")
-                                                ).map((a) => parseInt(a));
+            vm.idsProdDoPor = zwrocTabliceZtekstu(ss.getItem("idsProdDoPor")
+                                                 ).map((a) => parseInt(a));
         }
 
         
