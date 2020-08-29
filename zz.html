@@ -39,7 +39,7 @@
                    :class="(czyFormatCeny(cenaOd) && czyMinLtMax())
                          ? 'green' : 'red'"
                    @keyup.enter="updateFiltrWynikow"/>
-            <label for="cena_do">Cena od</label>
+            <label for="cena_do">Cena do</label>
             <input type="" name="cena_do" value="" placeholder="cena"
                    v-model.number="cenaDo"
                    :class="(czyFormatCeny(cenaDo) && czyMinLtMax())
@@ -63,7 +63,7 @@
                        v-model="wybrKolory" @change="updateFiltrWynikow"
                        value="red" /> Red &nbsp;&nbsp;&nbsp;&nbsp;
             </label>
-            <br/>
+            <br/><br/><br/>
             <h1 class="nagl_l_prod">Lista produktow</h1>
             <p class="par_l_prod">Sortowanie wg. ceny </p>
             <div id="cenaSortMal" class="sort_btn srt_malej"
@@ -98,7 +98,11 @@
                             <!-- kolor: {{produkt.color}} -->
                         </div>
                         <div class="kolumna prawa">
-                            <button type="button">Dodaj do porownania</button>
+                            <button type="button" @click="dodajProdDoPor(produkt)"
+                            :disabled="idProdDoPor.length === 3 ||
+                                          idProdDoPor.includes(produkt.id)">
+                                Dodaj do porownania
+                            </button>
                             <br/><br/>
                             <div class="cena_netto">
                                 {{produkt.price | cenaDoNetto}}

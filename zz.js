@@ -52,6 +52,9 @@ let vm = new Vue(
             // do filtrowania po marce produktu
             wybranaMarka: "Wybierz marke produktu",
             
+            // id, a nie same produkty, bo sessionStorage przechowuje tekst
+            idProdDoPor: [],
+            
         },
 
         methods: {
@@ -201,6 +204,13 @@ let vm = new Vue(
 
                 return tmpList;
             },
+            
+            dodajProdDoPor(produkt) {
+                this.idProdDoPor.push(produkt.id);
+
+                // zapamietujemy id dodanych produktow
+                window.sessionStorage.setItem("idProdDoPor", this.idProdDoPor);
+            },
 
             updateFiltrWynikow() {
                 console.log("w updateFiltrWynikow");
@@ -326,13 +336,21 @@ window.onload = () => {
         
         // wczytywanie kolorow
         if(ss.getItem("wybrKolory")) { // bo null przy 1 odpaleniu strony
-            vm.wybrKolory = zwrocTabliceKolorow(ss.getItem("wybrKolory"));
+            vm.wybrKolory = zwrocTabliceZtekstu(ss.getItem("wybrKolory"));
         }
-        
+
         vm.cenaOd = ss.getItem("cenaOd") || "";
         vm.cenaDo = ss.getItem("cenaDo") || "";
         
         vm.wybranaMarka = ss.getItem("wybranaMarka") || "Wybierz marke produktu";
+        
+        // wczytywanie id wybranych produktow
+        if(ss.getItem("idProdDoPor")) { // bo null przy 1 odpaleniu strony
+            // zwraca talice stringow, np. ["1", "2", "3"]
+            vm.idProdDoPor = zwrocTabliceZtekstu(ss.getItem("idProdDoPor")
+                                                ).map((a) => parseInt(a));
+        }
+
         
         vm.updateFiltrWynikow();
         
@@ -344,7 +362,7 @@ window.onload = () => {
 // przyjmuje tekst oddzielony przecinkami, np. "red,black,cyan"
 // zwraca kolory w tablicy stringow lub pusta tablice
 // bedzie otrzymywac tekst z sessionStorage.getItem("wybrKolory")
-function zwrocTabliceKolorow(tekst) {
+function zwrocTabliceZtekstu(tekst) {
     if(tekst) { 
         return tekst.split(",");
     } else {
