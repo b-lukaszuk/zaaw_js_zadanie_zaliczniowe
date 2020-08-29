@@ -48,33 +48,31 @@ let vm = new Vue(
         },
 
         methods: {
+            
+            // jakiSort {"m"|"r"}
+            ustawSortPoCenie(jakiSort) {
+                this.sortPoCenie = jakiSort;
+                // zapamietanie sortu
+                window.sessionStorage.setItem("sortPoCenie", this.sortPoCenie);
+            },
+            
             // sortuje inplace
             sortujPoCenieMal() {
                 // sort inplace
                 this.produktyOryg.sort((a, b) => a.price < b.price);
-                // bo filteredList jest na podstawie this produkty
-                this.produkty = this.produktyOryg;
                 // jesli jest wybrany filtr na przeciwnym sortowaniu to go usuwamy
                 document.getElementById("cenaSortRos").classList.remove("akt_filtr_cen");
                 // i dodajemy klase na te sortowanie
                 document.getElementById("cenaSortMal").classList.add("akt_filtr_cen");
-                this.sortPoCenie = "m";
-
-                // zapamietanie sortu
-                window.sessionStorage.setItem("sortPoCenie", this.sortPoCenie);
             },
 
             sortujPoCenieRos() {
                 // sort inplace
                 this.produktyOryg.sort((a, b) => a.price > b.price);
-                // bo filteredList jest na podstawie this produkty
-                this.produkty = this.produktyOryg;
                 // jesli jest wybrany filtr na przeciwnym sortowaniu to go usuwamy
                 document.getElementById("cenaSortMal").classList.remove("akt_filtr_cen");
                 // i dodajemy klase na te sortowanie
                 document.getElementById("cenaSortRos").classList.add("akt_filtr_cen");
-                this.sortPoCenie = "r";
-                window.sessionStorage.setItem("sortPoCenie", this.sortPoCenie);
             },
             
             // makieta_aplikacji.png nie zawiera pola/przycisku typu wyczysc filtrowanie
@@ -244,8 +242,6 @@ window.onload = () => {
 // zwraca kolory w tablicy stringow lub pusta tablice
 // bedzie otrzymywac tekst z sessionStorage.getItem("wybrKolory")
 function zwrocTabliceKolorow(tekst) {
-    console.log("w zwrocTabliceKolorow, otrzymano tekst: ");
-    console.log(tekst);
     if(tekst) { 
         return tekst.split(",");
     } else {

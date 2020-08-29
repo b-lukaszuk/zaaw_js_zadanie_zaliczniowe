@@ -57,11 +57,11 @@
             <h1 class="nagl_l_prod">Lista produktow</h1>
             <p class="par_l_prod">Sortowanie wg. ceny </p>
             <div id="cenaSortMal" class="sort_btn srt_malej"
-                 @click="sortujPoCenieMal">
+                 @click="ustawSortPoCenie('m'); updateFiltrWynikow()">
                 malejaco
             </div>
             <div id="cenaSortRos" class="sort_btn srt_rosn"
-                 @click="sortujPoCenieRos">
+                 @click="ustawSortPoCenie('r'); updateFiltrWynikow()">
                 rosnaco
             </div>
             <ul>
