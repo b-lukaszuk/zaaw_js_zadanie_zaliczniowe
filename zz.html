@@ -26,10 +26,12 @@
                 Szukaj
             </button>
             <br/> <br/>
-            <select name="" id="wyborMarki">
-                <option value="marka_wybor">Wybierz marke produktu</option>
-                <option v-for="produkt of filteredList"
-                        v-on:value="produkt.brand">{{produkt.brand}}</option>
+            <select name="" v-if="filteredList" id="wyborMarki"
+                    v-model="wybranaMarka"
+                    @change="zmienWyborMarki(); updateFiltrWynikow()">
+                <option :id="marka" v-for="marka of zwrocUnikalneMarki()"
+                        v-on:value="marka" >
+                    {{marka}}</option>
             </select>
             <label for="cena_od">Cena od</label>
             <input type="" name="cena_od" value="" placeholder="cena"

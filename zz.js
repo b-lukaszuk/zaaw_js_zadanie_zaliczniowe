@@ -49,6 +49,9 @@ let vm = new Vue(
             cenaOd: "",
             cenaDo: "",
             
+            // do filtrowania po marce produktu
+            wybranaMarka: "Wybierz marke produktu",
+            
         },
 
         methods: {
@@ -122,7 +125,7 @@ let vm = new Vue(
                 
                 if(!this.czyObieCenyOK()) {
                     window.alert("CenaOd i/lub CenaDo jest/sa nieprawidlowe(a)" + 
-                                "\nNie wykonano operacji filtrowania po cenie");
+                                 "\nNie wykonano operacji filtrowania po cenie");
                 } else if(cOd && cDo) { // jesli podano obie ceny
                     tmpList = tmpList.filter((produkt) => {
                         return (produkt.price >= cOd) && (produkt.price <= cDo);
@@ -166,6 +169,38 @@ let vm = new Vue(
                         (this.czyFormatCeny(this.cenaDo) || !this.cenaDo) &&
                         this.czyMinLtMax());
             },
+            
+            // zwraca liste stringow (unikalnych marek) z listy
+            zwrocUnikalneMarki() {
+                let unikalneMarki = [];
+                for (let i = 0; i < this.produktyOryg.length; i++) {
+                    if(!unikalneMarki.includes(this.produktyOryg[i].brand)){
+                        unikalneMarki.push(this.produktyOryg[i].brand);
+                    }
+                }
+                unikalneMarki.sort();
+                unikalneMarki.splice(0, 0, "Wybierz marke produktu");
+                return unikalneMarki;
+            },
+            
+            zmienWyborMarki() {
+                let marka = document.getElementById(this.wybranaMarka);
+                marka.setAttribute("selected", "true");
+            },
+
+            // filtruje marki po wybranaMarka
+            filtrujPoMarce(tmpList = this.produktyOryg) {
+                if(this.wybranaMarka !== "Wybierz marke produktu"){
+                    tmpList = tmpList.filter((produkt) => {
+                        return produkt.brand === this.wybranaMarka;
+                    });
+                }
+                
+                // zapamietanie marki
+                window.sessionStorage.setItem("wybranaMarka", this.wybranaMarka);
+
+                return tmpList;
+            },
 
             updateFiltrWynikow() {
                 console.log("w updateFiltrWynikow");
@@ -188,6 +223,8 @@ let vm = new Vue(
                 tmpList = this.wybierzKolor(tmpList);
 
                 tmpList = this.filtrujPoCenie(tmpList);
+
+                tmpList = this.filtrujPoMarce(tmpList);
                 
                 // na koniec zwracamy produkty do wyswietlenia
                 // nie modyfikujemy oryginalnej listy produktow
@@ -294,6 +331,8 @@ window.onload = () => {
         
         vm.cenaOd = ss.getItem("cenaOd") || "";
         vm.cenaDo = ss.getItem("cenaDo") || "";
+        
+        vm.wybranaMarka = ss.getItem("wybranaMarka") || "Wybierz marke produktu";
         
         vm.updateFiltrWynikow();
         
