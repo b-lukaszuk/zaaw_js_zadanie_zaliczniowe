@@ -6,6 +6,7 @@
 // uwaga: prostsze (i dozwolone) bylo po prostu wklejenie danych do vm.data
 // to m.in. wybranie axios-a pociagnelo za soba troche 'gimnastyki'
 // i pare nieeleganckich rozwiazan (patrz window.onload na koncu)
+// listy produkty, filteredList, produktyOryg
 
 let vm = new Vue(
     {
@@ -22,48 +23,118 @@ let vm = new Vue(
             // do stronicowania
             filteredList: null,
             
+            // lista pomocnicza do filtrowania po kolorze,
+            // cenie, marce 
+            produktyOryg: null,
+            
             // do stronicowania
             strona: 0,          // aktualnie wybrana strona
             strony: 0,          // liczba wszystkich stron
             
-            // do zawezania wyszukiwania
-            nazwa_lub_model_prod: "",
+            // do zawezania wyszukiwania po 
+            szukanaFraza: "",
             
-            // aktywny filtr cenowy
+            // aktywny sort cenowy
             // 3 stany {null | malejaco -> m | rosnaco -> r}
             // potrzebny do utrzymania posortowania cenowego po kliknieciu
             // <a href=?strona=2> 
             // (alternatywa vue router, ale wtedy sporo przerabiania aplikacji,
             // i duzo kodu do dopisania)
-            filtrCenowy: null,
+            sortPoCenie: "",
+            
+            // za: https://vuejs.org/v2/guide/forms.html#Checkbox
+            wybrKolory: ["red", "black", "cyan"],
             
         },
 
         methods: {
             // sortuje inplace
             sortujPoCenieMal() {
-                this.produkty.sort((a, b) => a.price < b.price);
+                // sort inplace
+                this.produktyOryg.sort((a, b) => a.price < b.price);
+                // bo filteredList jest na podstawie this produkty
+                this.produkty = this.produktyOryg;
                 // jesli jest wybrany filtr na przeciwnym sortowaniu to go usuwamy
                 document.getElementById("cenaSortRos").classList.remove("akt_filtr_cen");
                 // i dodajemy klase na te sortowanie
                 document.getElementById("cenaSortMal").classList.add("akt_filtr_cen");
-                this.filtrCenowy = "m";
-                // zapamietanie filtra
-                window.sessionStorage.setItem("filtrCenowy", this.filtrCenowy);
+                this.sortPoCenie = "m";
+
+                // zapamietanie sortu
+                window.sessionStorage.setItem("sortPoCenie", this.sortPoCenie);
             },
 
             sortujPoCenieRos() {
-                this.produkty.sort((a, b) => a.price > b.price);
+                // sort inplace
+                this.produktyOryg.sort((a, b) => a.price > b.price);
+                // bo filteredList jest na podstawie this produkty
+                this.produkty = this.produktyOryg;
                 // jesli jest wybrany filtr na przeciwnym sortowaniu to go usuwamy
                 document.getElementById("cenaSortMal").classList.remove("akt_filtr_cen");
                 // i dodajemy klase na te sortowanie
                 document.getElementById("cenaSortRos").classList.add("akt_filtr_cen");
-                this.filtrCenowy = "r";
-                window.sessionStorage.setItem("filtrCenowy", this.filtrCenowy);
+                this.sortPoCenie = "r";
+                window.sessionStorage.setItem("sortPoCenie", this.sortPoCenie);
             },
             
-            szukajPoKryteriach() {
-                console.log("szukam po kryteriach");
+            // makieta_aplikacji.png nie zawiera pola/przycisku typu wyczysc filtrowanie
+            // a wiec funkcja zaweza na stale
+            // aby miec znowu pelna liste nalezy odswiezyc strone
+            szukajPoNazwaMarkaOpis(tmpList = this.produktyOryg) {
+                tmpList = tmpList.filter((produkt) => {
+                    let czySpelnKryt = false;
+                    czySpelnKryt = produkt.name.includes(this.szukanaFraza) ||
+                        produkt.brand.includes(this.szukanaFraza) ||
+                        produkt.description.includes(this.szukanaFraza);
+                    return czySpelnKryt;
+                });
+                
+                // zapamietanie szukanej frazy
+                window.sessionStorage.setItem("szukanaFraza", this.szukanaFraza);
+                return tmpList;
+            },
+            
+            wybierzKolor(tmpList = this.produktyOryg) {
+                tmpList = tmpList.filter((produkt) => {
+                    let czySpelnKryt = false;
+                    for (let i = 0; i < this.wybrKolory.length; i++) {
+                        if(this.wybrKolory[i] === produkt.color) {
+                            return true;
+                        }
+                    }
+                    return czySpelnKryt;
+                });
+                
+
+                // zapamietanie listy kolorow
+                window.sessionStorage.setItem("wybrKolory", this.wybrKolory);
+
+                // zwrot listy produktow z danymi kryteriami
+                return tmpList;
+            },
+            
+            updateFiltrWynikow() {
+                console.log("w updateFiltrWynikow");
+
+                // jesli sa sortowania to sortujemy
+                if(this.sortPoCenie === "m") {
+                    this.sortujPoCenieMal();
+                } else if (this.sortPoCenie === "r") {
+                    this.sortujPoCenieRos();
+                }
+
+                // teraz filtrujemy (odrzucamy to co niepotrzebne)
+                // najpierw wczytujemy oryginalna liste produktow
+                let tmpList = this.produktyOryg;
+
+                // teraz kolejno sprawdzamy zawezenia/filtrowania listy produktow
+                tmpList = this.szukajPoNazwaMarkaOpis(tmpList);
+                // jesli szukana fraza jest pusta "" to zwroci wszystko
+
+                tmpList = this.wybierzKolor(tmpList);
+                // na koniec zwracamy filteredList do wyswietlenia
+                // nie modyfikujemy oryginalnej listy produktow
+                this.produkty = tmpList;
             }
         },
         
@@ -89,6 +160,7 @@ let vm = new Vue(
                     console.log("axios => wszystko OK");
                     console.log("axios => wczytano products do vm.produkty");
                     self.produkty = response.data;
+                    self.produktyOryg = response.data;
                 })
                 .finally(function() {
                 })
@@ -151,14 +223,32 @@ window.onload = () => {
         // kodu ponizej nie mozna zamknac w oddzielna funkcje
         // i umiescic jej w watch, bo spowodujemy infinite loop
         
-        // sprawdzamy czy ostatnio byl filtr cenowy jesli tak to go przywracamy
-        // potrzebne przy klikaniu <a href=?strona=2> przy stronicowaniu
-        let ostFiltrCenowy = window.sessionStorage.getItem("filtrCenowy");
-        if(ostFiltrCenowy === "m") {
-            vm.sortujPoCenieMal();
-        } else if (ostFiltrCenowy === "r") {
-            vm.sortujPoCenieRos();
+        let ss = window.sessionStorage;
+        
+        vm.sortPoCenie = ss.getItem("sortPoCenie") || "";
+        vm.szukanaFraza = ss.getItem("szukanaFraza") || "";
+        
+        // wczytywanie kolorow
+        if(ss.getItem("wybrKolory")) { // bo null przy 1 odpaleniu strony
+            vm.wybrKolory = zwrocTabliceKolorow(ss.getItem("wybrKolory"));
         }
+        
+        vm.updateFiltrWynikow();
+        
+        // testy
     }, 200);
 };
 
+
+// przyjmuje tekst oddzielony przecinkami, np. "red,black,cyan"
+// zwraca kolory w tablicy stringow lub pusta tablice
+// bedzie otrzymywac tekst z sessionStorage.getItem("wybrKolory")
+function zwrocTabliceKolorow(tekst) {
+    console.log("w zwrocTabliceKolorow, otrzymano tekst: ");
+    console.log(tekst);
+    if(tekst) { 
+        return tekst.split(",");
+    } else {
+        return [];
+    }
+}

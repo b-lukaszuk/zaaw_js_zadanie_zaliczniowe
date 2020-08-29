@@ -13,18 +13,19 @@
             <h1>Wyszukiwarka</h1>
             <hr/>
             <div class="wysz_marka_model">
-                <input name="" type="text"
-                       v-model="nazwa_lub_model_prod"
+                <input name="" type="text" maxlength="15"
+                       v-model="szukanaFraza"
                        class="z_lupka"
-                       :class="nazwa_lub_model_prod.length < 3 ? 'red' : 'green'"
+                       :class="szukanaFraza.length < 3 ? 'red' : 'green'"
                        placeholder="Podaj nazwe produktu lub model"/>
                 <img src="./mag_glass.svg" alt="lupka" class="lupka"></img>
             </div>
             <button type="button"
-            @click="szukajPoKryteriach">
+                    @click="updateFiltrWynikow"
+                    :disabled="szukanaFraza.length < 0">
                 Szukaj
             </button>
-            <br/>
+            <br/> <br/>
             <select name="" id="wyborMarki">
                 <option value="marka_wybor">Wybierz marke produktu</option>
                 <option v-for="produkt of filteredList"
@@ -34,18 +35,24 @@
             <input type="" name="cena_od" value="" placeholder="cena" />
             <label for="cena_do">Cena od</label>
             <input type="" name="cena_do" value="" placeholder="cena" />
-            <form action="">
-                Wybierz kolor:
-                <label class="wyb_kolor">
-                    <input name="" type="checkbox" value=""/> Kolor1
-                </label>
-                <label class="wyb_kolor">
-                    <input name="" type="checkbox" value=""/> Kolor2
-                </label>
-                <label class="wyb_kolor">
-                    <input name="" type="checkbox" value=""/> Kolor3
-                </label>
-            </form>
+            <br/>
+            <!-- za: https://vuejs.org/v2/guide/forms.html#Checkbox -->
+            Wybierz kolor:
+            <label class="wyb_kolor" for="black">
+                <input id="black" name="black" type="checkbox"
+                       v-model="wybrKolory" @change="updateFiltrWynikow"
+                       value="black"/> Black &nbsp;&nbsp;&nbsp;&nbsp;
+            </label>
+            <label class="wyb_kolor" for="cyan">
+                <input id="cyan" name="" type="checkbox"
+                       v-model="wybrKolory" @change="updateFiltrWynikow"
+                       value="cyan"/> Cyan &nbsp;&nbsp;&nbsp;&nbsp;
+            </label>
+            <label class="wyb_kolor" for="red">
+                <input id="red" name="" type="checkbox"
+                       v-model="wybrKolory" @change="updateFiltrWynikow"
+                       value="red" /> Red &nbsp;&nbsp;&nbsp;&nbsp;
+            </label>
             <br/>
             <h1 class="nagl_l_prod">Lista produktow</h1>
             <p class="par_l_prod">Sortowanie wg. ceny </p>
@@ -66,20 +73,30 @@
                             </div>
                         </div>
                         <div class="kolumna srodek">
-                            {{produkt.name}}
+                            <div class="nazwa_prod">
+                                {{produkt.name}}
+                            </div>
                             <br/>
                             Model produktu: {{produkt.model}}
                             <br/>
-                            Marka: {{produkt.brand}}
+                            <div class="marka_prod">
+                                Marka: {{produkt.brand}}
+                            </div>
                             <br/>
                             ID: {{produkt.id}}
+                            <br/>
+                            kolor: {{produkt.color}}
                         </div>
                         <div class="kolumna prawa">
                             <button type="button">Dodaj do porownania</button>
                             <br/><br/>
-                            {{produkt.price | cenaDoNetto}}
+                            <div class="cena_netto">
+                                {{produkt.price | cenaDoNetto}}
+                            </div>
                             <br/>
-                            {{produkt.price | cenaDoBrutto}}
+                            <div class="cena_brutto">
+                                {{produkt.price | cenaDoBrutto}}
+                            </div>
                         </div>
                     </div>
                 </li>
@@ -102,3 +119,9 @@
         <script src="./zz.js"></script>
     </body>
 </html>
+
+<!-- sessionStorage: -->
+<!-- vm.zmienna, stor_zm, wartosci -->
+<!-- sortPoCenie, sortPoCenie, {null,"r", "m"} -->
+<!-- wybrKolory, wybrKolory, [black, red, cyan] -->
+<!-- szukanaFraza, szukanaFraza, String (do 15 znakow) -->
