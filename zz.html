@@ -32,9 +32,17 @@
                         v-on:value="produkt.brand">{{produkt.brand}}</option>
             </select>
             <label for="cena_od">Cena od</label>
-            <input type="" name="cena_od" value="" placeholder="cena" />
+            <input type="" name="cena_od" value="" placeholder="cena"
+                   v-model.number="cenaOd"
+                   :class="(czyFormatCeny(cenaOd) && czyMinLtMax())
+                         ? 'green' : 'red'"
+                   @keyup.enter="updateFiltrWynikow"/>
             <label for="cena_do">Cena od</label>
-            <input type="" name="cena_do" value="" placeholder="cena" />
+            <input type="" name="cena_do" value="" placeholder="cena"
+                   v-model.number="cenaDo"
+                   :class="(czyFormatCeny(cenaDo) && czyMinLtMax())
+                         ? 'green' : 'red'"
+                   @keyup.enter="updateFiltrWynikow"/>
             <br/>
             <!-- za: https://vuejs.org/v2/guide/forms.html#Checkbox -->
             Wybierz kolor:
@@ -82,10 +90,10 @@
                             <div class="marka_prod">
                                 Marka: {{produkt.brand}}
                             </div>
-                            <br/>
-                            ID: {{produkt.id}}
-                            <br/>
-                            kolor: {{produkt.color}}
+                            <!-- <br/> -->
+                            <!-- ID: {{produkt.id}} -->
+                            <!-- <br/> -->
+                            <!-- kolor: {{produkt.color}} -->
                         </div>
                         <div class="kolumna prawa">
                             <button type="button">Dodaj do porownania</button>
@@ -125,3 +133,5 @@
 <!-- sortPoCenie, sortPoCenie, {null,"r", "m"} -->
 <!-- wybrKolory, wybrKolory, [black, red, cyan] -->
 <!-- szukanaFraza, szukanaFraza, String (do 15 znakow) -->
+<!-- cenaOd, cenaOd, cyferki -->
+<!-- cenaDo, cenaDo, cyferki -->

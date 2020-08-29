@@ -45,6 +45,10 @@ let vm = new Vue(
             // za: https://vuejs.org/v2/guide/forms.html#Checkbox
             wybrKolory: ["red", "black", "cyan"],
             
+            // do filtrowania po cenie
+            cenaOd: "",
+            cenaDo: "",
+            
         },
 
         methods: {
@@ -111,6 +115,58 @@ let vm = new Vue(
                 return tmpList;
             },
             
+            // filtruje po cenie netto
+            filtrujPoCenie(tmpList = this.produktyOryg) {
+                let cOd = this.cenaOd;
+                let cDo = this.cenaDo;
+                
+                if(!this.czyObieCenyOK()) {
+                    window.alert("CenaOd i/lub CenaDo jest/sa nieprawidlowe(a)" + 
+                                "\nNie wykonano operacji filtrowania po cenie");
+                } else if(cOd && cDo) { // jesli podano obie ceny
+                    tmpList = tmpList.filter((produkt) => {
+                        return (produkt.price >= cOd) && (produkt.price <= cDo);
+                    });
+                } else if(cOd) { // jesli jest tylko cena od
+                    tmpList = tmpList.filter((produkt) => {
+                        return produkt.price >= cOd;
+                    });
+                } else if(cDo) { // jesli jest tylko cena do
+                    tmpList = tmpList.filter((produkt) => {
+                        return produkt.price <= cDo;
+                    });
+                }
+                
+                // zapamietanie cenaOd i cenaDo
+                window.sessionStorage.setItem("cenaOd", this.cenaOd);
+                window.sessionStorage.setItem("cenaDo", this.cenaDo);
+                
+                return tmpList;
+            },
+            
+            // sprawdza, czy string jest w odpowiednim formacie ceny
+            // tj. tylko cyfry i kropki sa dozwolone
+            czyFormatCeny(tekst) {
+                // sam wpisalem regexa, ale wydaje sie dzialac poprawnie
+                return /^\d{1,3}\.{0,1}\d{0,2}$/.test(tekst);
+            },
+            
+            // sprawdza, czy cenaOd < CenaDo
+            czyMinLtMax() {
+                // jesli ktoras z cen jest nie wpisana zwroc true
+                if(!this.cenaOd | !this.cenaDo) {
+                    return true;
+                }
+                return this.cenaOd < this.cenaDo;
+            },
+
+            czyObieCenyOK() {
+                // sprawdzamy format ceny i to czy zostala wpisana
+                return ((this.czyFormatCeny(this.cenaOd) || !this.cenaOd) &&
+                        (this.czyFormatCeny(this.cenaDo) || !this.cenaDo) &&
+                        this.czyMinLtMax());
+            },
+
             updateFiltrWynikow() {
                 console.log("w updateFiltrWynikow");
 
@@ -130,11 +186,16 @@ let vm = new Vue(
                 // jesli szukana fraza jest pusta "" to zwroci wszystko
 
                 tmpList = this.wybierzKolor(tmpList);
-                // na koniec zwracamy filteredList do wyswietlenia
+
+                tmpList = this.filtrujPoCenie(tmpList);
+                
+                // na koniec zwracamy produkty do wyswietlenia
                 // nie modyfikujemy oryginalnej listy produktow
                 this.produkty = tmpList;
+                
             }
         },
+        
         
         filters: {
             cenaDoNetto: function(cena) {
@@ -230,6 +291,9 @@ window.onload = () => {
         if(ss.getItem("wybrKolory")) { // bo null przy 1 odpaleniu strony
             vm.wybrKolory = zwrocTabliceKolorow(ss.getItem("wybrKolory"));
         }
+        
+        vm.cenaOd = ss.getItem("cenaOd") || "";
+        vm.cenaDo = ss.getItem("cenaDo") || "";
         
         vm.updateFiltrWynikow();
         
