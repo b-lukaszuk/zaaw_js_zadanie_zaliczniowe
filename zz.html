@@ -69,7 +69,7 @@
                 <h1 class="nagl_l_prod">Lista produktow</h1>
                 <button type="button" class="wyswPorProdBtn"
                         @click="wyswietlPorProd"
-                        :disabled="idsProdDoPor.length == 0">
+                        :disabled="idsProdDoPor.length < 2">
                     Porownaj wybr. produky
                 </button>
                 <p class="par_l_prod">Sortowanie wg. ceny </p>
@@ -140,11 +140,18 @@
             <div v-if="trybPorownywania" class="porownywarka">
                 <h1>Porownywarka produktow</h1>
                 <hr/> <br/> <br/>
+                <div class="button">
+                    <button type="button" @click="wrocDoListyProd">
+                        Powrot do listy produktow
+                    </button>
+                </div>
+                <br/>
                 <ul>
                     <li v-for="produkt of zwrocProdPor()"
                         :class="produkt.special ? 'prod_specjalny' : null">
                         <div class="button">
-                            <button type="button">
+                            <button type="button"
+                                    @click="usunPorProd(produkt.id)">
                                 Usun z porownania
                             </button>
                         </div>

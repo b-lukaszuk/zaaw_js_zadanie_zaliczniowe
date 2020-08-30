@@ -181,12 +181,14 @@ nav a:not([href]) {
 
 .porownywarka ul {
     list-style-type: none;
-    flex-direction: column;
-    column-count: 3;
+    display: flex;
+    flex-wrap: wrap;
 }
 .porownywarka ul li {
     border: 1px solid red;
     padding: 4em;
+    flex: 1 1 200px;
+    margin: 1em;
 }
 
 .porownywarka .button {

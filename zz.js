@@ -215,8 +215,11 @@ let vm = new Vue(
             },
             
             wyswietlPorProd() {
-                console.log("wyswietlam porownanie produktow"); 
                 this.trybPorownywania = true;
+
+                // zapamietujemy tryb porownywania
+                window.sessionStorage.setItem("trybPorownywania", 
+                                              this.trybPorownywania);
             },
             
             // zwraca liste produktow porownywanych
@@ -233,8 +236,21 @@ let vm = new Vue(
                 return tabProdPor;
             },
             
-            usunPorProd() {
-                // tu skonczylem
+            // usuwa produkt z porownania
+            usunPorProd(id_do_us) {
+                this.idsProdDoPor = this.idsProdDoPor.filter(
+                    (id) => id !== id_do_us);
+
+                // zapamietujemy nowe idsProdDoPor
+                window.sessionStorage.setItem("idsProdDoPor",
+                                             this.idsProdDoPor);
+            },
+            
+            wrocDoListyProd() {
+                this.trybPorownywania = false;
+                // zapamietujemy wybor trybu porownywania
+                window.sessionStorage.setItem("trybPorownywania",
+                                             this.trybPorownywania);
             },
 
             updateFiltrWynikow() {
@@ -376,6 +392,8 @@ window.onload = () => {
                                                  ).map((a) => parseInt(a));
         }
 
+        // wczytanie trybu porownania (jesli taki jest)
+        vm.trybPorownywania = Boolean(ss.getItem("trybPorownywania"));
         
         vm.updateFiltrWynikow();
         
