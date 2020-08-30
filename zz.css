@@ -1,3 +1,4 @@
+/* kod dziala poprawnie, ale nie byl optymalizowany  */
 button:hover {
     cursor: pointer;
 }
@@ -88,7 +89,7 @@ ul {
 }
 
 .srodek {
-    width: 50%;
+    width: 48%;
 }
 
 .wiersz {
@@ -242,3 +243,4 @@ nav a:not([href]) {
 .porownywarka .kolor_prod {
     margin-top: 2em;
 }
+

@@ -1,3 +1,5 @@
+// kod dziala poprawnie, ale nie byl optymalizowany 
+
 // wpisac w terminal: json-server --watch db.json
 // aby uruchomic localhosta
 // teraz pod: http://localhost:3000/products mamy liste produktow
@@ -243,14 +245,39 @@ let vm = new Vue(
 
                 // zapamietujemy nowe idsProdDoPor
                 window.sessionStorage.setItem("idsProdDoPor",
-                                             this.idsProdDoPor);
+                                              this.idsProdDoPor);
             },
             
             wrocDoListyProd() {
                 this.trybPorownywania = false;
                 // zapamietujemy wybor trybu porownywania
                 window.sessionStorage.setItem("trybPorownywania",
-                                             this.trybPorownywania);
+                                              this.trybPorownywania);
+            },
+            
+            wyczyscWszystkieFiltry() {
+
+                let ss = window.sessionStorage;    
+
+                this.szukanaFraza = "";
+                ss.setItem("szukanaFraza", this.szukanaFraza);
+                
+                this.wybrKolory = ["red", "black", "cyan"];
+                ss.setItem("wybrKolory", this.wybrKolory);
+                
+                this.cenaOd = "";
+                ss.setItem("CenaOd", this.cenaOd);
+                this.cenaDo = "";
+                ss.setItem("cenaDo", this.cenaDo);
+                
+                this.wybranaMarka = "Wybierz marke produktu";
+                ss.setItem("wybranaMarka", this.wybranaMarka);
+                
+                this.idsProdDoPor = [];
+                ss.setItem("idsProdDoPor", this.idsProdDoPor);
+                
+                this.trybPorownywania = false;
+                ss.setItem("trybPorownywania", this.trybPorownywania);
             },
 
             updateFiltrWynikow() {
@@ -370,34 +397,8 @@ window.onload = () => {
         // kodu ponizej nie mozna zamknac w oddzielna funkcje
         // i umiescic jej w watch, bo spowodujemy infinite loop
         
-        let ss = window.sessionStorage;
+        wczytajStanStrony(); 
         
-        vm.sortPoCenie = ss.getItem("sortPoCenie") || "";
-        vm.szukanaFraza = ss.getItem("szukanaFraza") || "";
-        
-        // wczytywanie kolorow
-        if(ss.getItem("wybrKolory")) { // bo null przy 1 odpaleniu strony
-            vm.wybrKolory = zwrocTabliceZtekstu(ss.getItem("wybrKolory"));
-        }
-
-        vm.cenaOd = ss.getItem("cenaOd") || "";
-        vm.cenaDo = ss.getItem("cenaDo") || "";
-        
-        vm.wybranaMarka = ss.getItem("wybranaMarka") || "Wybierz marke produktu";
-        
-        // wczytywanie id wybranych produktow
-        if(ss.getItem("idsProdDoPor")) { // bo null przy 1 odpaleniu strony
-            // zwraca talice stringow, np. ["1", "2", "3"]
-            vm.idsProdDoPor = zwrocTabliceZtekstu(ss.getItem("idsProdDoPor")
-                                                 ).map((a) => parseInt(a));
-        }
-
-        // wczytanie trybu porownania (jesli taki jest)
-        vm.trybPorownywania = Boolean(ss.getItem("trybPorownywania"));
-        
-        vm.updateFiltrWynikow();
-        
-        // testy
     }, 200);
 };
 
@@ -411,4 +412,39 @@ function zwrocTabliceZtekstu(tekst) {
     } else {
         return [];
     }
+}
+
+function wczytajStanStrony() {
+    let ss = window.sessionStorage;
+    
+    vm.sortPoCenie = ss.getItem("sortPoCenie") || "";
+    vm.szukanaFraza = ss.getItem("szukanaFraza") || "";
+    
+    // wczytywanie kolorow
+    if(ss.getItem("wybrKolory")) { // bo null przy 1 odpaleniu strony
+        vm.wybrKolory = zwrocTabliceZtekstu(ss.getItem("wybrKolory"));
+    }
+
+    vm.cenaOd = ss.getItem("cenaOd") || "";
+    vm.cenaDo = ss.getItem("cenaDo") || "";
+    
+    vm.wybranaMarka = ss.getItem("wybranaMarka") || "Wybierz marke produktu";
+    
+    // wczytywanie id wybranych produktow
+    if(ss.getItem("idsProdDoPor")) { // bo null przy 1 odpaleniu strony
+        // zwraca talice stringow, np. ["1", "2", "3"]
+        vm.idsProdDoPor = zwrocTabliceZtekstu(ss.getItem("idsProdDoPor")
+                                             ).map((a) => parseInt(a));
+    }
+
+    // wczytanie trybu porownania (jesli taki jest)
+    // moze byc null (1 zaladow strony), "true" lub "false"
+    // bo Boolean("false") zwraca true (nie pusty string)
+    if(ss.getItem("trybPorownywania") === "true") {
+        vm.trybPorownywania = true;
+    } else {
+        vm.trybPorownywania = false;
+    }
+    
+    vm.updateFiltrWynikow();
 }

@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- kod dziala poprawnie, ale nie byl optymalizowany -->
 <html lang="en">
     <head>
         <meta charset="UTF-8"/>
@@ -24,9 +25,14 @@
                 </div>
                 <button type="button"
                         @click="updateFiltrWynikow"
-                        :disabled="szukanaFraza.length < 0">
+                        :disabled="szukanaFraza.length < 3">
                     Szukaj
                 </button>
+                <button type="button"
+                        @click="wyczyscWszystkieFiltry(); updateFiltrWynikow()" >
+                    Wyczysc all (filtry/wybr. prod.)
+                </button>
+
                 <br/> <br/>
                 <select name="" v-if="filteredList" id="wyborMarki"
                         v-model="wybranaMarka"
@@ -81,6 +87,7 @@
                      @click="ustawSortPoCenie('r'); updateFiltrWynikow()">
                     rosnaco
                 </div>
+                <br/>
                 <ul>
                     <li v-for="produkt of filteredList">
                         <div class="wiersz" :class="produkt.special ? 'prod_specjalny' : null">
@@ -195,11 +202,3 @@
         <script src="./zz.js"></script>
     </body>
 </html>
-
-<!-- sessionStorage: -->
-<!-- vm.zmienna, stor_zm, wartosci -->
-<!-- sortPoCenie, sortPoCenie, {null,"r", "m"} -->
-<!-- wybrKolory, wybrKolory, [black, red, cyan] -->
-<!-- szukanaFraza, szukanaFraza, String (do 15 znakow) -->
-<!-- cenaOd, cenaOd, cyferki -->
-<!-- cenaDo, cenaDo, cyferki -->
